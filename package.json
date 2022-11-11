@@ -1,11 +1,11 @@
 {
-  "name": "desafio-6",
+  "name": "backend-coder",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "test": "node ./test/benchmark.js",
-    "start": "0x app.js"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",

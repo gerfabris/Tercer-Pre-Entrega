@@ -2,19 +2,17 @@ const express = require('express')
 const session = require('express-session')
 const mongoSessions = require('./config/mongoSessions.js');
 const dotenv = require('dotenv').config()
-const logger = require('morgan')
+const morgan = require('morgan')
 const hbs = require('hbs')
 /* ----- require routes ------- */
 const login = require('./routes/login.routes.js');
 const signup = require('./routes/signup.routes.js');
 const home = require('./routes/home.routes.js');
 const logout = require('./routes/logout.routes.js');
-const infoCompress = require('./routes/info-compress.js');
 const admin = require('./routes/admin.routes.js');
 const user = require('./routes/user.routes.js');
 const cart = require('./routes/cart.routes.js');
 /* ----- socket ------- */
-const mensajes = require('./sockets/mensajes.js');
 const productos = require('./sockets/productos.socket.js');
 const carrito = require('./sockets/cart.socket.js');
 /* --------- middlewares -------- */
@@ -47,7 +45,7 @@ app.use(session({
     },
     store: mongoSessions
 }))
-app.use(logger('dev'))
+app.use(morgan('dev'))
 /* ------------ passport ------------ */
 const passport = require('./services/passport.js');
 app.use(passport.initialize());
@@ -57,12 +55,10 @@ app.use(login);
 app.use(signup);
 app.use(home);
 app.use(logout);
-app.use(infoCompress);
 app.use(admin)
 app.use(user)
 app.use(cart)
 app.use(pageNotFound)
-
 /* ----- socket escuchando las conecciones */
 io.on('connection', async (socket) =>{
     console.log('A user connected');
