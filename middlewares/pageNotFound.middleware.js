@@ -1,6 +1,5 @@
 const logger = require("../utils/logger")
 
-
 const pageNotFound = (req, res, next) => {
     try {
         let error = new Error()

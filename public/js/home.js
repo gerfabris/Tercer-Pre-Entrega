@@ -13,10 +13,17 @@ const renderProductos = productos => {
     })
 }
 
-const agregarProducto = () => {
-    server.emit('agregar-producto', (id) =>{
+const agregarProducto = (evt) => {
+    const productId = document.getElementById('productId').value
+    if(productId){
+        server.emit('agregar-producto', productId , (id) =>{
+            console.log(id);
+        })
+    }
+    server.emit('agregar-producto',  (id) =>{
         console.log(id);
     })
+    return false
 }
 
 

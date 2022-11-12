@@ -100,7 +100,6 @@ class CartsMongoDB{
     async deleteById(id){
         try{
             const carrito = await this.coleccion.findById({_id: id})
-
             if(carrito){
                 const carritoEliminado = await this.coleccion.deleteOne({_id: id})
                 logger.info("Carrito Eliminado");
@@ -111,14 +110,14 @@ class CartsMongoDB{
             logger.error('Error al implementar deleteById' , error);
         }
     }
-    async deleteProductById(idProducto, idCarrito){
+    async deleteProductById(idCarrito, idProducto){
+        console.log('se ejecuta');
         try{
-
             const carrito = await this.coleccion.findById({_id: idCarrito}) 
             const producto = await carrito.productos.findById({_id: idProducto}) 
-            
+            console.log(carrito);
             if(carrito){
-                const productoEliminado = await carrito.productos.deleteOne({_id: idProducto})
+                await carrito.productos.deleteOne({_id: idProducto})
                 logger.info("Producto eliminado del carrito");
                 return carrito
             }else{
@@ -131,6 +130,7 @@ class CartsMongoDB{
     async deleteProductInCart(email, idProducto){
         try{
             const carrito = await this.coleccion.findOne({email: email}) 
+            console.log(carrito);
             const producto = await carrito.productos.findById({_id: idProducto}) 
             if(carrito && producto){
                 const productoEliminado = await this.coleccion.updateOne({ $pull: { productos: { _id: id } } })
@@ -140,7 +140,7 @@ class CartsMongoDB{
                 logger.info("No se encuentra el carrito");
             }
         }catch(error){
-            logger.error('Error al implementar deleteProductById' , error);
+            logger.error('Error al implementar deleteProductInCart' , error);
         }
     }
     async deleteAll(){

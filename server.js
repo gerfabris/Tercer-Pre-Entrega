@@ -59,6 +59,20 @@ app.use(admin)
 app.use(user)
 app.use(cart)
 app.use(pageNotFound)
+/* ----- socket middleware para capturar request */
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+io.use(wrap(session(
+    {
+        secret: process.env.SESSION_SECRET || '123456',
+        resave: false,
+        saveUninitialized: false,
+        rolling: true,                  
+        cookie: {
+            maxAge: 1000 * 60 * 10                     
+        },
+        store: mongoSessions
+    }
+)));
 /* ----- socket escuchando las conecciones */
 io.on('connection', async (socket) =>{
     console.log('A user connected');
