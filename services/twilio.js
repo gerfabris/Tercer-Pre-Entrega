@@ -21,24 +21,38 @@ const sendNewOrder = async (order, user) => {
             body: `Se ha realizado un nuevo pedido por el usuario ${user.name} con el email: ${user.userEmail} y el teléfono: ${user.phone} con el siguiente detalle: ${order}`,
         }
         logger.info('Mensaje de orden enviado')
-        const message = await client.messages.create(option)
+        await client.messages.create(option)
     } catch (error) {
         logger.error('Error en sendNewOrder', error)
     }
 }
 
-export const sendWhatsApp = async (order, user) => {
+const sendWhatsApp = async (order, total, user) => {
     try {
         const option = {
             from: TWILIO_WHATSAPP_NUMBER,
-            to: `whatsapp:${PHONE_ADMIN}`,
-            body: `Se ha realizado un nuevo pedido por el usuario ${user.name} con el email: ${user.userEmail} y el teléfono: ${user.phone} con el siguiente detalle: ${order}`,
+            to: `whatsapp:${user.phone}`,
+            body: `Se ha realizado un nuevo pedido por el usuario ${user.name} con el email: ${user.userEmail} y el teléfono: ${user.phone} con el siguiente detalle: ${order} \nTOTAL: $ ${total}`,
         }
         logger.info('Mensaje de orden enviado por WhatsApp')
-        const message = await client.messages.create(option)
+        await client.messages.create(option)
     } catch (error) {
         logger.error('Error en sendWhatsApp', error)
     }
 }
 
-module.exports = { sendNewOrder, sendWhatsApp }
+const sendWhatsAppAdmin = async (order, total, user) => {
+    try {
+        const option = {
+            from: TWILIO_WHATSAPP_NUMBER,
+            to: `whatsapp:${PHONE_ADMIN}`,
+            body: `Se ha realizado un nuevo pedido por el usuario ${user.name} con el email: ${user.userEmail} y el teléfono: ${user.phone} con el siguiente detalle: ${order} \nTOTAL: $ ${total}`,
+        }
+        logger.info('Mensaje de orden enviado por WhatsApp')
+        await client.messages.create(option)
+    } catch (error) {
+        logger.error('Error en sendWhatsApp', error)
+    }
+}
+
+module.exports = { sendNewOrder, sendWhatsApp , sendWhatsAppAdmin }

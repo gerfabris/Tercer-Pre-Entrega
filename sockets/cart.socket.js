@@ -1,4 +1,6 @@
 const { productsDao, cartsDao } = require("../dao/index.dao");
+const { sendEmailNewOrder } = require("../services/nodeMailer");
+const { sendNewOrder, sendWhatsApp, sendWhatsAppAdmin } = require("../services/twilio");
 const logger = require("../utils/logger");
 
 const sumar = (arr) => {
@@ -56,9 +58,19 @@ const carrito = async (socket, io ) => {
             let user = socket.request.session.passport.user
             const carrito = await cartsDao.getByEmail(user.userEmail)
             if(carrito){
-                const order = carrito.productos
-                await sendNewOrder(order, user)
-                await sendWhatsApp(order, user)
+                //let order = JSON.stringify(carrito.productos)
+                //let order = carrito.productos
+                let precios = carrito.productos.map( prod => prod.price)
+                let total = sumar(precios)
+                let order = carrito.productos.map( prod => {
+                    return `
+                        Producto: ${prod.title}
+                        Precio: $${prod.price}
+                    `
+                }) 
+                await sendWhatsAppAdmin(order, total, user) // ---> Este envía a ADMIN por whatsapp la Orden ya que no deja enviar SMS a msj sin verificar
+                await sendWhatsApp(order, total , user) // ---> Este envía whatsapp a usuario su orden
+                await sendEmailNewOrder(order, total, user) // ---> Este envía correo a usuario su orden
                 await carrito.updateOne({ $set: { productos: [] } })
                 io.sockets.emit('mensaje-servidor-carrito', carrito)
             }

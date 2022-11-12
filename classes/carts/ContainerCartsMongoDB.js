@@ -130,10 +130,9 @@ class CartsMongoDB{
     async deleteProductInCart(email, idProducto){
         try{
             const carrito = await this.coleccion.findOne({email: email}) 
-            console.log(carrito);
-            const producto = await carrito.productos.findById({_id: idProducto}) 
-            if(carrito && producto){
-                const productoEliminado = await this.coleccion.updateOne({ $pull: { productos: { _id: id } } })
+            const producto = carrito.productos//.find({_id: idProducto}) 
+            if(carrito){
+                await this.coleccion.updateOne({ $pull: { productos: { _id: idProducto } } })
                 logger.info("Producto eliminado del carrito");
                 return carrito
             }else{
