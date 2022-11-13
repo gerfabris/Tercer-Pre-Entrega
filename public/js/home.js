@@ -23,7 +23,7 @@ const agregarProducto = (evt) => {
     server.emit('agregar-producto',  (id) =>{
         console.log(id);
     })
-    return false
+    //return false
 }
 
 

@@ -27,7 +27,7 @@ const renderTotal = (total) => {
 }
 
 const eliminarProducto = () => {
-    const productId = document.getElementById('productId').value
+    //const productId = document.getElementById('productId').value
     if(productId){
         server.emit('eliminar-producto', productId ,(id) =>{
             console.log(id);
@@ -39,6 +39,12 @@ const eliminarProducto = () => {
 }
 
 const comprarCarrito = () => {
+    server.emit('vaciar-carrito', (id) =>{
+        console.log(id);
+    })
+}
+
+const vaciarCarrito = () => {
     server.emit('comprar-carrito', (id) =>{
         console.log(id);
     })

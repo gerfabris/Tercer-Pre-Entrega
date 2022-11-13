@@ -8,7 +8,6 @@ class CartsMongoDB{
     async crearCarrito(email, obj){
         try{
             if(obj){
-                console.log(obj);
                 const carritoNuevo = await this.coleccion.create({ email: email, productos: obj})
                 logger.info(`El carrito fue cargado: ${carritoNuevo}, con productos`);
                 return carritoNuevo
@@ -129,12 +128,11 @@ class CartsMongoDB{
     }
     async deleteProductInCart(email, idProducto){
         try{
-            const carrito = await this.coleccion.findOne({email: email}) 
-            const producto = carrito.productos//.find({_id: idProducto}) 
+            const carrito = await this.coleccion.findOne({email: email})
             if(carrito){
-                await this.coleccion.updateOne({ $pull: { productos: { _id: idProducto } } })
+                const carritoActualizado = await this.coleccion.updateOne({ $pull: { productos: { title : idProducto } } })
                 logger.info("Producto eliminado del carrito");
-                return carrito
+                return carritoActualizado
             }else{
                 logger.info("No se encuentra el carrito");
             }

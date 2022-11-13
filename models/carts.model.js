@@ -19,7 +19,14 @@ const cartsSchema = new Schema({
         type: mongoose.Types.ObjectId,
         ref: 'productos',
     }
-] */
+] 
+
+{
+        type: Array,
+        required: true,
+    }
+
+*/
 
 
 module.exports = cartsSchema

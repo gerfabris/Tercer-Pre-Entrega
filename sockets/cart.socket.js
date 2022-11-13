@@ -26,30 +26,36 @@ const carrito = async (socket, io ) => {
             socket.emit('mensaje-servidor-carrito', carrito)
         }
         socket.on('agregar-producto', async (productId) => {
-            let user = socket.request.session.passport.user
+            let user = socket.request.session.passport.user           
             let email = user.userEmail
-            const producto = await productsDao.getById(productId)
             const carrito = await cartsDao.getByEmail(email)
             if(carrito){
-                await cartsDao.pushProduct(email, producto)
                 io.sockets.emit('mensaje-servidor-carrito', carrito)
             }else{
-                carrito = await cartsDao.crearCarrito(email)
-                await cartsDao.pushProduct(email, producto)
-
                 io.sockets.emit('mensaje-servidor-carrito', carrito)
             }
         })
 
         socket.on('eliminar-producto', async (productId) => {
-            console.log('aca');
+            let user = socket.request.session.passport.user
+            let email = user.userEmail
+            //const carrito = await cartsDao.getByEmail(email)
+            if(carrito){
+                //await cartsDao.deleteProductInCart(email, productId)                
+                io.sockets.emit('mensaje-servidor-carrito', carrito)
+            }else{
+                io.sockets.emit('mensaje-servidor-carrito', carrito)
+            }
+        })
+
+        socket.on('vaciar-producto', async (productId) => {
             let user = socket.request.session.passport.user
             let email = user.userEmail
             const carrito = await cartsDao.getByEmail(email)
             if(carrito){
-                await cartsDao.deleteProductInCart(email, productId)
-                //await cartsDao.deleteProductById(email, productId)
-                
+                await carrito.updateOne({ $set: { productos: [] } })                
+                io.sockets.emit('mensaje-servidor-carrito', carrito)
+            }else{
                 io.sockets.emit('mensaje-servidor-carrito', carrito)
             }
         })
