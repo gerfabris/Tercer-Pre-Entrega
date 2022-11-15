@@ -3,7 +3,7 @@ const logger = require("../utils/logger.js");
 const { Router } = express;
 const passport = require('../services/passport.js');
 const upload = require("../middlewares/uploadsFiles.middleware.js");
-const sendEmailNewUser = require("../services/nodeMailer.js");
+const { sendEmailNewUser } = require("../services/nodeMailer.js");
 
 const router = Router();
 
@@ -20,11 +20,11 @@ router.get('/signup', (req,res) =>{
         logger.error(error)
     }
 });
-router.post('/signup', passport.authenticate('signup', {failureRedirect:'/failsignup'}) , (req,res)=>{
+router.post('/signup', passport.authenticate('signup', {failureRedirect:'/failsignup'}) , async (req,res)=>{
     try {
         logger.info('POST /signup')
         let user = req.user
-        sendEmailNewUser(user)
+        await sendEmailNewUser(user)
         res.redirect('/');
     } catch (error) {
         res.status(500).json({
