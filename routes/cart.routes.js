@@ -26,7 +26,7 @@ router.post('/cart', async (req,res) =>{
         const producto = await productsDao.getById(productId)
         const carrito = await cartsDao.getByEmail(email)
         if(producto && carrito){
-            await cartsDao.pushProduct(email, producto)
+            const nuevoCarrito = await cartsDao.pushProduct(email, producto)
         }else{
             await cartsDao.crearCarrito(email)
             await cartsDao.pushProduct(email, producto)

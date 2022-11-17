@@ -42,7 +42,12 @@ class CartsMongoDB{
         try{
             const carrito = await this.coleccion.findOne({ email: email })
             if (carrito){
-                const carritoActualizado = await this.coleccion.updateOne({ $push: { productos: producto } })
+                const carritoActualizado = await this.coleccion.findOneAndUpdate(
+                    {email: email}, 
+                    { $push: { productos: producto } } 
+                )
+
+                //const carritoActualizado = await this.coleccion.updateOne({ $push: { productos: producto } })
                 logger.info('Producto agregado al carrito')
                 return carritoActualizado
             } else{
@@ -130,7 +135,11 @@ class CartsMongoDB{
         try{
             const carrito = await this.coleccion.findOne({email: email})
             if(carrito){
-                const carritoActualizado = await this.coleccion.updateOne({ $pull: { productos: { title : idProducto } } })
+                const carritoActualizado = await this.coleccion.findOneAndUpdate(
+                    {email: email}, 
+                    { $pull: { productos: { title : idProducto } } } 
+                )
+                //const carritoActualizado = await this.coleccion.updateOne({ $pull: { productos: { title : idProducto } } })
                 logger.info("Producto eliminado del carrito");
                 return carritoActualizado
             }else{
